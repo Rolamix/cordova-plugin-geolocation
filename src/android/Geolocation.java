@@ -36,7 +36,9 @@ public class Geolocation extends CordovaPlugin implements OnLocationResultEventL
     private SparseArray<LocationContext> locationContexts;
     private FusedLocationProviderClient fusedLocationClient;
 
-    public static final String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+    public static final String[] PERMISSIONS = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+    private static final int PERMISSION_DENIED = 0;
+    private static final int PERMISSION_GRANTED = 1;
 
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -51,7 +53,14 @@ public class Geolocation extends CordovaPlugin implements OnLocationResultEventL
             return false;
         }
 
-        if ("getLocation".equals(action)) {
+        if ("getPermissionStatus".equals(action)) {
+            int statusCode = PERMISSION_DENIED;
+            if (hasPermission()) {
+                statusCode = PERMISSION_GRANTED;
+            }
+            callbackContext.success(statusCode);
+            return true;
+        } else if ("getLocation".equals(action)) {
             int id = args.getString(3).hashCode();
             LocationContext lc = new LocationContext(id, LocationContext.Type.RETRIEVAL, args, callbackContext, this);
             locationContexts.put(id, lc);
@@ -59,7 +68,7 @@ public class Geolocation extends CordovaPlugin implements OnLocationResultEventL
             if (hasPermission()) {
                 getLocation(lc);
             } else {
-                PermissionHelper.requestPermissions(this, id, permissions);
+                PermissionHelper.requestPermissions(this, id, PERMISSIONS);
             }
 
         } else if ("addWatch".equals(action)) {
@@ -70,7 +79,7 @@ public class Geolocation extends CordovaPlugin implements OnLocationResultEventL
             if (hasPermission()) {
                 addWatch(lc);
             } else {
-                PermissionHelper.requestPermissions(this, id, permissions);
+                PermissionHelper.requestPermissions(this, id, PERMISSIONS);
             }
 
         } else if ("clearWatch".equals(action)) {
@@ -84,7 +93,7 @@ public class Geolocation extends CordovaPlugin implements OnLocationResultEventL
     }
 
     private boolean hasPermission() {
-        for (String permission : permissions) {
+        for (String permission : PERMISSIONS) {
             if (!PermissionHelper.hasPermission(this, permission)) {
                 return false;
             }

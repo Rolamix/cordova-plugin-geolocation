@@ -28,7 +28,7 @@ var Position = require('./Position');
 var timers = {}; // list of timers in use
 
 // Returns default params, overrides if provided with values
-function parseParameters (options) {
+function parseParameters(options) {
     var opt = {
         maximumAge: 0,
         enableHighAccuracy: false,
@@ -55,7 +55,7 @@ function parseParameters (options) {
 }
 
 // Returns a timeout failure, closed over a specified timeout value and error callback.
-function createTimeout (errorCallback, timeout) {
+function createTimeout(errorCallback, timeout) {
     var t = setTimeout(function () {
         clearTimeout(t);
         t = null;
@@ -69,13 +69,16 @@ function createTimeout (errorCallback, timeout) {
 
 var geolocation = {
     lastPosition: null, // reference to last known (cached) position returned
+    getPermissionStatus: function (successCallback, errorCallback) {
+        exec(successCallback, errorCallback, 'Geolocation', 'getPermissionStatus', []);
+    },
     /**
-   * Asynchronously acquires the current position.
-   *
-   * @param {Function} successCallback    The function to call when the position data is available
-   * @param {Function} errorCallback      The function to call when there is an error getting the heading position. (OPTIONAL)
-   * @param {PositionOptions} options     The options for getting the position data. (OPTIONAL)
-   */
+     * Asynchronously acquires the current position.
+     *
+     * @param {Function} successCallback    The function to call when the position data is available
+     * @param {Function} errorCallback      The function to call when there is an error getting the heading position. (OPTIONAL)
+     * @param {PositionOptions} options     The options for getting the position data. (OPTIONAL)
+     */
     getCurrentPosition: function (successCallback, errorCallback, options) {
         argscheck.checkArgs('fFO', 'geolocation.getCurrentPosition', arguments);
         options = parseParameters(options);
@@ -113,8 +116,8 @@ var geolocation = {
         var fail = function (e) {
             clearTimeout(timeoutTimer.timer);
             timeoutTimer.timer = null;
-            var err = new PositionError(e.code, e.message);
             if (errorCallback) {
+                var err = new PositionError(e.code, e.message);
                 errorCallback(err);
             }
         };
@@ -123,13 +126,13 @@ var geolocation = {
         // fire the success callback with the cached position.
         if (geolocation.lastPosition && options.maximumAge && (((new Date()).getTime() - geolocation.lastPosition.timestamp) <= options.maximumAge)) {
             successCallback(geolocation.lastPosition);
-        // If the cached position check failed and the timeout was set to 0, error out with a TIMEOUT error object.
+            // If the cached position check failed and the timeout was set to 0, error out with a TIMEOUT error object.
         } else if (options.timeout === 0) {
             fail({
                 code: PositionError.TIMEOUT,
                 message: "timeout value in PositionOptions set to 0 and no cached Position object available, or cached Position object's age exceeds provided PositionOptions' maximumAge parameter."
             });
-        // Otherwise we have to call into native to retrieve a position.
+            // Otherwise we have to call into native to retrieve a position.
         } else {
             if (options.timeout !== Infinity) {
                 // If the timeout value was not set to Infinity (default), then
