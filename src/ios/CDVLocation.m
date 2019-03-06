@@ -49,6 +49,9 @@
 #pragma mark -
 #pragma mark CDVLocation
 
+const int PERMISSION_DENIED = 0;
+const int PERMISSION_GRANTED = 1;
+
 @implementation CDVLocation
 
 @synthesize locationManager, locationData;
@@ -61,6 +64,18 @@
     __highAccuracyEnabled = NO;
     self.locationData = nil;
 }
+
+- (void)getPermissionStatus:(CDVInvokedUrlCommand*)command
+{
+    int statusCode = PERMISSION_DENIED;
+    if ([self isLocationServicesEnabled] && [self isAuthorized]) {
+        statusCode = PERMISSION_GRANTED;
+    }
+
+    CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:statusCode];
+    [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+}
+
 
 - (BOOL)isAuthorized
 {
