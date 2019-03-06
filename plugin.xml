@@ -22,7 +22,7 @@
 xmlns:rim="http://www.blackberry.com/ns/widgets"
 xmlns:android="http://schemas.android.com/apk/res/android"
            id="cordova-plugin-rmx-geolocation"
-      version="4.0.2">
+      version="4.0.3">
 
     <name>Geolocation</name>
     <description>Cordova Geolocation Plugin</description>
@@ -71,7 +71,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         </js-module>
 
         <js-module src="www/geolocation.js" name="geolocation">
-            <clobbers target="navigator.geolocation" />
+            <clobbers target="window.plugins.RmxGeolocation" />
         </js-module>
 
     </platform>
@@ -92,7 +92,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         </js-module>
 
         <js-module src="www/geolocation.js" name="geolocation">
-            <clobbers target="navigator.geolocation" />
+            <clobbers target="window.plugins.RmxGeolocation" />
         </js-module>
 
         <config-file target="config.xml" parent="/*">
@@ -137,7 +137,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         </js-module>
 
         <js-module src="www/geolocation.js" name="geolocation">
-            <clobbers target="navigator.geolocation" />
+            <clobbers target="window.plugins.RmxGeolocation" />
         </js-module>
     </platform>
 </plugin>

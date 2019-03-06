@@ -27,7 +27,7 @@ description: Access GPS data.
 
 # cordova-plugin-geolocation
 
-:warning: This plugin is SUPPORTED by OutSystems. Customers entitled to Support Services may obtain assistance through Support.
+:warning: This plugin is a custom fork for Rolamix. It adds the ability to check the current permission status, and inherits community work to make the Android geolocation work on native side, not in the webview. We have had endless problems with the webview version of geolocation.
 
 This plugin provides information about the device's location, such as
 latitude and longitude.
@@ -157,12 +157,12 @@ error, the `geolocationError` callback is passed a
 ```
 
 ### iOS Quirks
- 
+
  Since iOS 10 it's mandatory to provide an usage description in the `info.plist` if trying to access privacy-sensitive data. When the system prompts the user to allow access, this usage description string will displayed as part of the permission dialog box, but if you didn't provide the usage description, the app will crash before showing the dialog. Also, Apple will reject apps that access private data but don't provide an usage description.
 
  This plugins requires the following usage description:
 
- * `NSLocationWhenInUseUsageDescription` describes the reason that the app accesses the user's location. 
+ * `NSLocationWhenInUseUsageDescription` describes the reason that the app accesses the user's location.
 
  To add this entry into the `info.plist`, you can use the `edit-config` tag in the `config.xml` like this:
 
@@ -171,7 +171,7 @@ error, the `geolocationError` callback is passed a
     <string>need location access to find things nearby</string>
 </edit-config>
 ```
- 
+
 ## navigator.geolocation.watchPosition
 
 Returns the device's current position when a change in position is detected.
