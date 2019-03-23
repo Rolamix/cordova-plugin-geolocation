@@ -22,7 +22,7 @@
 xmlns:rim="http://www.blackberry.com/ns/widgets"
 xmlns:android="http://schemas.android.com/apk/res/android"
            id="cordova-plugin-rmx-geolocation"
-      version="4.0.3">
+      version="4.0.4">
 
     <name>Geolocation</name>
     <description>Cordova Geolocation Plugin</description>
@@ -43,7 +43,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <config-file target="AndroidManifest.xml" parent="/*">
             <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
             <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-            <uses-feature android:name="android.hardware.location.gps" />
+            <uses-feature android:name="android.hardware.location.gps" android:required="false" />
         </config-file>
 
         <config-file target="res/xml/config.xml" parent="/*">
@@ -96,17 +96,10 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         </js-module>
 
         <config-file target="config.xml" parent="/*">
-                <feature name="Geolocation">
-                    <param name="ios-package" value="CDVLocation"/>
-                </feature>
+            <feature name="Geolocation">
+                <param name="ios-package" value="CDVLocation"/>
+            </feature>
         </config-file>
-
-        <!-- Usage description of the Location for iOS 6+, mandatory since iOS 10 -->
-        <preference name="LOCATION_WHENINUSE_USAGE_DESCRIPTION" default=" " />
-        <config-file target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
-                <string>$LOCATION_WHENINUSE_USAGE_DESCRIPTION</string>
-        </config-file>
-
 
         <header-file src="src/ios/CDVLocation.h" />
         <source-file src="src/ios/CDVLocation.m" />
