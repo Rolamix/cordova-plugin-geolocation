@@ -45,6 +45,7 @@ typedef NSUInteger CDVLocationStatus;
 
 @interface CDVLocation : CDVPlugin <CLLocationManagerDelegate>{
     @private BOOL __locationStarted;
+    @private BOOL __permissionStatusRequested;
     @private BOOL __highAccuracyEnabled;
     CDVLocationData* locationData;
 }
@@ -57,7 +58,7 @@ typedef NSUInteger CDVLocationStatus;
 - (void)addWatch:(CDVInvokedUrlCommand*)command;
 - (void)clearWatch:(CDVInvokedUrlCommand*)command;
 - (void)returnLocationInfo:(NSString*)callbackId andKeepCallback:(BOOL)keepCallback;
-- (void)returnLocationError:(NSUInteger)errorCode withMessage:(NSString*)message;
+- (void)returnLocationError:(NSString*)callbackId withErrorCode:(NSUInteger)errorCode withInternalCode:(NSUInteger)internalCode withMessage:(NSString*)message;
 - (void)startLocation:(BOOL)enableHighAccuracy;
 
 - (void)locationManager:(CLLocationManager*)manager
