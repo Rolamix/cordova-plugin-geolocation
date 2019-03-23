@@ -31,6 +31,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+// Error handling improvement
+// https://github.com/HousekeepLtd/cordova-plugin-geolocation/tree/CB-12406
+
 public class Geolocation extends CordovaPlugin implements OnLocationResultEventListener {
 
     private SparseArray<LocationContext> locationContexts;

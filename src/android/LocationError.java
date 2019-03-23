@@ -16,6 +16,10 @@ public enum LocationError {
     private final int code;
     private final String message;
 
+    private static final int PERMISSION_DENIED = 1;
+    private static final int POSITIONUNAVAILABLE = 2;
+    // private static final int POSITIONTIMEOUT = 3;
+
     LocationError(int code, String message) {
         this.code = code;
         this.message = message;
@@ -24,9 +28,15 @@ public enum LocationError {
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
 
+        int codeToUse = POSITIONUNAVAILABLE;
+        if (this.code == 100) {
+            codeToUse = PERMISSION_DENIED;
+        }
+
         try {
-            obj.put("code", this.code);
+            obj.put("code", codeToUse);
             obj.put("message", this.message);
+            obj.put("internalErrorCode", this.code);
         }
         catch(JSONException e) {
             return obj;
