@@ -23,12 +23,14 @@
  * Position error object
  *
  * @constructor
- * @param code
- * @param message
+ * @param code  The error code to report, one of PERMISSION_DENIED, POSITION_UNAVAILABLE or TIMEOUT
+ * @param message  A message describing the error, may or not may not be usable
+ * @param internalErrorCode The internal error code reported by the native code, for more information
  */
-var PositionError = function (code, message) {
-    this.code = code || null;
-    this.message = message || '';
+var PositionError = function (code, message, internalErrorCode = null) {
+  this.code = code || null;
+  this.message = message || '';
+  this.internalErrorCode = internalErrorCode;
 };
 
 PositionError.prototype.PERMISSION_DENIED = PositionError.PERMISSION_DENIED = 1;
