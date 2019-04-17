@@ -1,10 +1,14 @@
 package org.apache.cordova.geolocation;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.Manifest;
 import android.location.Location;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -31,6 +35,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static android.app.Activity.RESULT_OK;
+
 // Error handling improvement
 // https://github.com/HousekeepLtd/cordova-plugin-geolocation/tree/CB-12406
 
@@ -42,11 +48,12 @@ public class Geolocation extends CordovaPlugin implements OnLocationResultEventL
     public static final String[] PERMISSIONS = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
     private static final int PERMISSION_DENIED = 0;
     private static final int PERMISSION_GRANTED = 1;
+    private static final int REQUEST_CHECK_SETTINGS = 3943;
 
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
-        locationContexts = new SparseArray<LocationContext>();
+        locationContexts = new SparseArray<>();
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(cordova.getActivity());
     }
 
@@ -273,24 +280,47 @@ public class Geolocation extends CordovaPlugin implements OnLocationResultEventL
             }
         };
 
+        CordovaPlugin plug = this;
+        CordovaInterface cordova = this.cordova;
+        Activity activity = cordova.getActivity();
+
         OnFailureListener checkLocationSettingsOnFailure = new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 PluginResult result;
                 if (e instanceof ResolvableApiException) {
-                    // Location settings are not satisfied, but this can be fixed.
+                    // Location settings are not satisfied, but this can be fixed by showing the user a dialog.
+                    try {
+                        // Show the dialog by calling startResolutionForResult(),
+                        // and check the result in onActivityResult().
+                        cordova.setActivityResultCallback(plug);
+                        ResolvableApiException resolvable = (ResolvableApiException) e;
+                        resolvable.startResolutionForResult(activity, REQUEST_CHECK_SETTINGS);
+                    } catch (IntentSender.SendIntentException sendEx) {
+                        // Ignore the error.
+                    }
                     result = new PluginResult(PluginResult.Status.ERROR, LocationError.LOCATION_SETTINGS_ERROR_RESOLVABLE.toJSON());
+                    locationContext.getCallbackContext().sendPluginResult(result);
                 }
                 else {
                     result = new PluginResult(PluginResult.Status.ERROR, LocationError.LOCATION_SETTINGS_ERROR.toJSON());
+                    locationContext.getCallbackContext().sendPluginResult(result);
                 }
 
-                locationContext.getCallbackContext().sendPluginResult(result);
                 locationContexts.remove(locationContext.getId());
             }
         };
 
         task.addOnSuccessListener(checkLocationSettingsOnSuccess);
         task.addOnFailureListener(checkLocationSettingsOnFailure);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == RESULT_OK) {
+            // Nothing to do, but future versions of the plugin might add some kind of callback.
+        }
     }
 }

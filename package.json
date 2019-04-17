@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-rmx-geolocation",
-  "version": "4.0.4",
+  "version": "4.0.5",
   "description": "Cordova Geolocation Plugin",
   "cordova": {
     "id": "cordova-plugin-rmx-geolocation",
