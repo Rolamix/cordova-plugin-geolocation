@@ -27,10 +27,10 @@
  * @param message  A message describing the error, may or not may not be usable
  * @param internalErrorCode The internal error code reported by the native code, for more information
  */
-var PositionError = function (code, message, internalErrorCode = null) {
+var PositionError = function (code, message, internalErrorCode) {
   this.code = code || null;
   this.message = message || '';
-  this.internalErrorCode = internalErrorCode;
+  this.internalErrorCode = internalErrorCode || null;
 };
 
 PositionError.prototype.PERMISSION_DENIED = PositionError.PERMISSION_DENIED = 1;
